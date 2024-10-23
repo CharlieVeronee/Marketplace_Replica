@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br>
+{% if not saved_items %}
+  <h3>You don't have any items saved yet...</h3>
+{% endif %}
+
+{% if saved_items %}
+  <h3>YOUR SAVED ITEMS! LET'S GO!</h3>
+  <table class='table table-hover table-bordered container'>
+    <thead class="thead-dark">
+      <tr>
+          <th scope="col">Product Name</th>
+          <th scope="col">Seller</th>
+          <th scope="col">Price</th>
+          <th scope="col">Send To Cart?</th>
+          <th scope="col">Remove</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in saved_items %}
+        <tr>
+          <th scope="row">{{ item.name }}</th>
+          <td>{{ item.seller }}</td>
+          <td>{{ item.price }}</td>
+          <td>
+            <form action="" method="post">
+              {{ send[loop.index0].hidden_tag() }}
+              <p>{{ send[loop.index0].submit() }}</p>
+            </form>
+          </td>
+          <td>
+            <form action="" method="post">
+              {{ remove[loop.index0].hidden_tag() }}
+              <p>{{ remove[loop.index0].submit() }}</p>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+
+{% endblock %}
+

@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+      <div class="container-fluid px-4 px-lg-5 my-5">
+          <div class="row gx-4 gx-lg-5 align-items-center">
+              <div class="col-md-7 col-sm-12">
+                {% if product.images %}
+                <!-- The expanding image container -->
+                <div style="cursor: zoom-in;" class="product-image-container">
+                  <!-- Expanded image -->
+                  <img id="expandedImg" src="{{ url_for('static', filename = 'uploads/' + product.images[0])}}" width="100%">
+                </div>
+                {% else %}
+                <img class="card-img-top mb-5 mb-md-0" id="product-image" src="{{ url_for('static', filename='img/default.jpg') }}">
+                {% endif %}
+              </div>
+              <div class="col-md-5">
+                  <div class="small mb-1">SKU: {{product.id}}</div>
+                  <h1 class="fw-bolder">{{product.name}}</h1>
+                  <div class="fs-5">
+                      <!-- <span class="text-decoration-line-through">$SALEPRICE</span> -->
+                      <span>${{product.price}}</span>
+                  </div>
+                  <div class="fs-5 mb-4 stars">
+                    <p class="small">
+                      {% for i in range(0, (product.stars // 1) | int) %} 
+                      <!-- Floor function -->
+                        <i class="bi bi-star-fill"></i>
+                      {% endfor %}
+                      {% if product.stars % 1 >= 0.5 %}
+                        <i class="bi bi-star-half"></i>
+                      {% endif %}
+                      {% for i in range(0, 5 - ((product.stars // 1) | int + (product.stars % 1 >= 0.5))) %}
+                        <i class="bi bi-star"></i>
+                      {% endfor %}
+                      {{'%0.2f'| format(product.stars|float)}}/5
+                    </p>
+                  </div>
+                  <div>
+                    {% if sellers %}
+                    <p>Add this item to your cart!</p>
+                    <form id="addToCartForm" method="POST" action="{{ url_for('cart.add_to_cart') }}">
+                      <input type="hidden" name="product_id" value="{{ product.id }}">
+                      <label for="seller">Select a product seller:</label>
+                      <select class="form-control text-center me-3" name="seller" id="seller">
+                        {% for seller in sellers %}
+                        <option value="{{seller.id}}">{{seller.firstname}} {{seller.lastname}}, {{seller.quantity}} available</option>
+                        {% endfor %}
+                      </select>
+                      <br>
+                      <label for="quantity">Select a quantity to purchase:</label>
+                      <input class="form-control text-center me-3" name="quantity" id="quantity" type="number" min="1" step="1" />
+                      <br>
+                      <button class="btn btn-primary flex-shrink-0" type="submit">
+                        <i class="bi-cart-fill me-1"></i>
+                        Add to cart
+                      </button>
+                    </form>
+                    {% else %}
+                    <p>This product is currently <b>out of stock</b>.</p>
+                    {% endif %}
+                  </div>
+              </div>
+              <div class="row gx-4 gx-lg-5 align-items-center text-align-center">
+                <div class="col-md-7">
+                {% if product.images | length > 1 %}
+                <div class="d-flex">
+                  {% for i in range(0,(product.images | length)) %}
+                  <div class="product-image-column p-1">
+                    <img width="100%" height="120px" src="{{ url_for('static', filename = 'uploads/' + product.images[i])}}" onclick="myFunction(this);">
+                  </div>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+              </div>
+          </div>
+          <div class="row gx-4 gx-lg-5 align-items-center">
+            <hr class="mt-5" />
+            <div class="product-description mt-5">
+              {{product.description | safe}}
+            </div>
+          </div>
+          {% if product.categories %}
+          <div class="row gx-4 gx-lg-5 align-items-center">
+            <hr class="mt-5" />
+            <div class="col-md-6 mt-5">
+              <h3>Categories:</h3>
+              <div class="categories-container">
+              {% for category in product.categories %}
+                <span class="badge rounded-pill mt-2 bg-info">{{category}}</span>
+              {% endfor %}
+              </div>
+           </div>
+          </div>
+          {% endif %}
+          
+          <div class="row gx-4 gx-lg-5 align-items-center">
+            <hr class="mt-5" />
+            <h3>Product Reviews</h3>
+            {% with messages = get_flashed_messages() %}
+          {% if messages %}
+          <div class="alert alert-info mt-2" role="alert">
+              {% for message in messages %}
+                {{ message }} 
+              {% endfor %}
+          </div>
+          {% endif %}
+          {% endwith %}
+            <div class="product-review mt-3">
+            {% if reviews %}
+              <h4>Number of reviews: {{ num_reviews }}, Average rating: {{'%0.2f'| format(product.stars|float)}}/5</h4>
+                <div class="row">
+              {% for review in reviews %}
+              <div class="col-lg-3 card text-primary m-3">
+              <div class="fs-5 stars">
+                <p class="small">
+                  {% for i in range(0, (review.num_stars // 1) | int) %} 
+                  <!-- Floor function -->
+                    <i class="bi bi-star-fill"></i>
+                  {% endfor %}
+                  {% if review.num_stars % 1 >= 0.5 %}
+                    <i class="bi bi-star-half"></i>
+                  {% endif %}
+                  {% for i in range(0, 5 - ((review.num_stars // 1) | int + (review.num_stars % 1 >= 0.5))) %}
+                    <i class="bi bi-star"></i>
+                  {% endfor %}
+                  {{review.num_stars | int}}/5
+                </p>
+              </div>
+              {{review.comments}}
+              <br>
+              <div class="text-secondary">{{humanize_time(review.time_reviewed)}}</div>
+            </div>
+              {% endfor %}
+            </div>
+
+            
+            {% else %}
+            <div class="text-secondary">This product currently has no reviews!</div>
+            {% endif %}
+            </div>
+
+            {% if current_user.is_authenticated %}
+              <h5 class="mt-5">Create a new review</h5>
+              <form method="POST" action="{{ url_for('reviews.create_product_review') }}">
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                <label for="num_stars">Number of Stars:</label>
+                <input class="form-control text-center me-3" type="number" name="num_stars" id="num_stars" min="1" max="5" step="1" style="width: 100px;" />
+                <br>
+                <label for="comments">Comments:</label>
+                <textarea class="form-control me-3" name="comments" id="comments" style="width: 800px; height: 100px; resize: vertical;"></textarea>
+                <br>
+                <button class="btn btn-primary flex-shrink-0" type="submit">
+                  Submit Review
+                </button>
+                </form>
+              
+            {% else %}
+                <a class="btn btn-primary" href="{{ url_for('users.login') }}">Sign in to create reviews!</a>
+            {% endif %}
+
+            <br>
+            <br>
+          </div>
+          {% if sellers %}
+          <div class="row mt-5 mb-5">
+            <h3>View Seller Profiles</h3>
+            <p>
+            {% for seller in sellers %}
+            <div class="col-lg-3 col-md-4 col-sm-12">
+                <a href="{{ url_for('myprofile.public_profile', id = seller.id)}}">{{seller.firstname}} {{seller.lastname}}</a>
+              </div>
+            {% endfor %}
+            </p>
+          </div>
+          {% endif %}
+          {% if current_user.is_authenticated %}
+          <div class="row w-25 align-items-left">
+            <hr class="mt-5" />
+            <form action="{{ url_for('inventory.addToInv') }}" method="POST" style="display: inline;">
+              <input type="hidden" name="pid" value="{{ product.id }}">
+              <button class="btn btn-outline-dark flex-shrink-0" type="submit">
+                Sell Product
+                <i class="bi bi-plus-circle"></i>
+              </button>
+            </form>  
+          </div>
+          {% endif %}
+
+
+
+
+      </div>
+<script>
+  $(document).ready(function(){
+  $('#expandedImg')
+    .wrap('<span style="display:inline-block"></span>')
+    .css('display', 'block')
+    .parent()
+    .zoom({magnify: 1});
+});
+
+// see https://www.w3schools.com/howto/howto_js_tab_img_gallery.asp 
+function myFunction(img) {
+  var expandImg = document.getElementById("expandedImg");
+  expandImg.src = img.src;
+  $('#expandedImg').trigger('zoom.destroy'); // redo the zoom function when image changes
+  $('#expandedImg')
+    .wrap('<span style="display:inline-block"></span>')
+    .css('display', 'block')
+    .parent()
+    .zoom({magnify: 1});
+}
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if current_user.isSeller == True %}
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="mt-3 col-sm-12 col-lg-8">
+      <h1>Create New Product</h1>
+    </div>
+  </div>
+  <div class="row mb-5 justify-content-center">
+    <div class="mt-3 col-sm-12 col-lg-8">
+      <form method="post" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="form-group mb-3">
+          {% with messages = get_flashed_messages() %}
+          {% if messages %}
+          <div class="alert alert-info mt-2" role="alert">
+              {% for message in messages %}
+                {{ message }} 
+              {% endfor %}
+          </div>
+          {% endif %}
+          {% endwith %}
+        </div>
+        <div class="form-group">
+          {{ form.name.label }}<br/>
+          {{ form.name(class_="form-control") }}<br/>
+          {% for error in form.name.errors %}
+          <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+        </div>
+        <div class="form-group">
+          {{ form.description.label }}<br/>
+          {{ form.description(class_="form-control") }}<br/>
+          {% for error in form.description.errors %}
+          <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+        </div>
+        <div class="form-group">
+          {{ form.price.label }}<br/>
+          {{ form.price(class_="form-control") }}<br/>
+          {% for error in form.price.errors %}
+          <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+        </div>
+        <div class="form-group">
+          {{ form.quantity.label }}<br/>
+          {{ form.quantity(class_="form-control") }}<br/>
+          {% for error in form.quantity.errors %}
+          <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+        </div>
+        <div class="form-group">
+          {{ form.uploads.label }}<br/>
+          {{ form.uploads(class_="form-control") }}<br/>
+          {% for error in form.uploads.errors %}
+          <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+        </div>
+        {% if categories %}
+        <div class="form-group">
+          Product Categories:<br/>
+          <select class="form-control" id="categories" name="categories" multiple>
+            {% for category in categories %}
+            <option value="{{category[0]}}">{{category[1]}}</option>
+            {% endfor %}
+
+          </select>
+          <br/>
+        </div>
+        {% endif %}
+        <div class="form-group">
+          {{ form.submit(class_="btn btn-primary") }}
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

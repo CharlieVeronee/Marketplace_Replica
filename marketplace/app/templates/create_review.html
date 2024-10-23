@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="mt-3 col-sm-12 col-lg-8">
+      <h1>Create A New Review!</h1>
+    </div>
+  </div>
+  <div class="row mb-5 justify-content-center">
+    <div class="mt-3 col-sm-12 col-lg-8">
+      <form id="reviewForm" method="post" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="form-group mb-3">
+          {% with messages = get_flashed_messages() %}
+          {% if messages %}
+          <div class="alert alert-info mt-2" role="alert">
+              {% for message in messages %}
+                {{ message }} 
+              {% endfor %}
+          </div>
+          {% endif %}
+          {% endwith %}
+        </div>
+        <div class="form-group">
+          {{ form.reviewType.label }}<br/>
+          {{ form.reviewType(size=1) }}<br/>
+          {% for error in form.reviewType.errors %}
+          <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+        </div>
+        <div class="form-group">
+          {{ form.identifier.label }}<br/>
+          {{ form.identifier(size=32) }}<br/>
+          {% for error in form.identifier.errors %}
+          <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.comments.label }}<br/>
+            {{ form.comments(class_="form-control") }}<br/>
+            {% for error in form.comments.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+          </div>  
+        <div class="form-group">
+            {{ form.num_stars.label }}<br/>
+            {{ form.num_stars(size=1) }}<br/>
+            {% for error in form.num_stars.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+          </div>
+        <div class="form-group">
+            {{ form.submit(class_="btn btn-primary") }}
+            </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

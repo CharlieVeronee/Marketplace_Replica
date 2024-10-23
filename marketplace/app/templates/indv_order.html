@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<br/>
+
+<h1>Your Order #{{order_id}}</h1>
+
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product Name</th>
+      <th scope="col">Seller</th>
+      <th scope="col">Price</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in order_items %}
+      <tr>
+        <td>{{item.name}}</td>
+        <td>{{item.seller}}</td>
+        <td>{{item.price}}</td>
+        <td>{{item.quantity}}</td>
+        <td>{{item.total}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h4>Total Price: ${{total_price|round(2)}}</h4>
+
+<br/>
+
+<h1>Add Delivery Address</h1>
+    
+    <form method="post">
+        {{ form.hidden_tag() }}
+        
+        <div class="form-group">
+            {{ form.delivery_address.label(class="control-label") }}
+            {{ form.delivery_address(class="form-control") }}
+            {% if form.delivery_address.errors %}
+                <small class="text-danger">{{ form.delivery_address.errors[0] }}</small>
+            {% endif %}
+        </div>
+
+        {{ form.submit(class="btn btn-primary") }}
+    </form>
+
+
+{% endblock %}

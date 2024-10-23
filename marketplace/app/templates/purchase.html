@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block content %}
+
+<br><br>
+
+<style>
+
+body {
+	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background-size: 400% 400%;
+	animation: gradient 15s ease infinite;
+  background-attachment: fixed; /* Prevent background from repeating on scroll */
+	height: 100vh;
+}
+    @keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+.styled-table {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #343a40;
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: sans-serif;
+  }
+
+  .styled-table th,
+  .styled-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #343a40;
+  }
+
+  .styled-table thead {
+    background-color: #343a40;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+  }
+
+  .styled-table tbody {
+    background-color: #495057;
+    color: white;
+  }
+
+  .styled-table tbody tr:hover {
+    background-color: #5a6268;
+  }
+
+  .form-inline {
+    margin-bottom: 20px;
+  }
+
+  .form-control,
+  .btn-primary1 {
+    background-color: #343a40;
+    color: white;
+  }
+
+  .form-control {
+    margin-right: 10px;
+  }
+
+
+
+</style>
+
+<h2>My Purchases:</h2>
+
+<form method="get" action="{{ url_for('purchases.get_purchase') }}" class="form-inline">
+  <label class="mr-2" for="sort_by">Sort by:</label>
+  <select class="form-control mr-2" id="sort_by" name="sort_by">
+    <option value="time_newest" {% if request.args.get('sort_by') == 'time_newest' %}selected{% endif %}>Purchase Date Newest to Oldest</option>
+    <option value="price_ascending" {% if request.args.get('sort_by') == 'price_ascending' %}selected{% endif %}>Price Ascending</option>
+    <option value="price_descending" {% if request.args.get('sort_by') == 'price_descending' %}selected{% endif %}>Price Descending</option>
+    <option value="time_oldest" {% if request.args.get('sort_by') == 'time_oldest' %}selected{% endif %}>Purchase Date Oldest to Newest</option>
+    <option value="name_a" {% if request.args.get('sort_by') == 'name_a' %}selected{% endif %}>Item Name A to Z</option>
+    <option value="name_z" {% if request.args.get('sort_by') == 'name_z' %}selected{% endif %}>Item Name Z to A</option>
+  </select>
+  <button type="submit" class="btn btn-primary1">Sort</button>
+</form>
+
+
+
+<table class='styled-table'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product Name</th>
+      <th scope="col">Product Price</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Total Cost</th>
+      <th scope="col">Seller Name</th>
+      <th scope="col">Order Number</th>
+      <th scope="col">Purchase Date</th>
+      <th scope="col">How Long Ago Was Purchase Fulfilled</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for purchase in purchases%}
+      <tr>
+        <th scope="row">{{purchase.name}}</th>
+        <td>{{purchase.price}}</td>
+        <td>{{purchase.quantity}}</td>
+        <td>{{ purchase.price * purchase.quantity }}</td>
+        <td>{{ purchase.firstname ~ ' ' ~ purchase.lastname }}</td>
+        <td><a href="{{url_for('cart.get_orders')}}">{{ purchase.order_id }}</a></td>
+        <td>
+          {% if purchase.time %}
+            {{ humanize_time(purchase.time) }}
+          {% else %}
+            N/A
+          {% endif %}
+        </td>
+        <td>
+          {% if purchase.time %}
+            {{ humanize_time_ago(purchase.time) }}
+          {% else %}
+            N/A
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock 
+%}

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+    <br><br>
+
+
+
+
+
+
+
+
+<h1>YOUR CART! LET'S GO!</h1>
+
+
+{% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div>
+          {% for message in messages %}
+          <div class="alert alert-info mt-2" role="alert">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+  <table class="table table-hover table-bordered">
+      <thead class="thead-dark">
+          <tr>
+              <th scope="col">Product Name</th>
+              <th scope="col">Seller</th>
+              <th scope="col">Price</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Change Quantity</th>
+              <th scope="col">Total</th>
+              <th scope="col">Save?</th>
+              <th scope="col">Remove</th>
+          </tr>
+      </thead>
+      <tbody>
+          {%for item in cart%}
+          <tr>
+              <th scope="row">{{item.name}}</th>
+              <td>{{item.seller}}</td>
+              <td>{{item.price}}</td>
+              <td>{{item.quantity}}</td>
+              <td>
+                <form action="" method="post">
+                  {{adjustq[loop.index0].hidden_tag()}}
+                  <p>{{adjustq[loop.index0].quantity(size=10, value=item.quantity)}}</p>
+                  <p>{{adjustq[loop.index0].submit()}}</p>
+                </form>
+              </td>      
+              <td>{{item.total}}</td>
+              <td>
+                <form action="" method="post">
+                  {{save[loop.index0].hidden_tag()}}
+                  <p>{{save[loop.index0].submit()}}</p>
+                </form>
+              </td>
+              <td>
+                <form action="" method="post">
+                  {{remove[loop.index0].hidden_tag()}}
+                  <p>{{remove[loop.index0].submit()}}</p>
+                </form>
+              </td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+
+
+  <h5 style="float: right; padding:5px; margin-left:5px;">Current Balance: ${{balance}}</h5>
+  <h5 style="float: right; padding:5px; margin-left:5px;">Total Price: ${{totalPrice}}</h5>
+
+
+  <form action="" method="post">
+    {{ checkout.hidden_tag() }}
+    <p>{{ checkout.submit() }}</p>
+        </form>
+
+</div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+  /* Credit: https://codepen.io/P1N2O/pen/pyBNzX */
+  body {
+	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background-size: 400% 400%;
+	animation: gradient 15s ease infinite;
+  background-attachment: fixed; /* Prevent background from repeating on scroll */
+	height: 100vh;
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+.navbar, .navbar-margin {
+  background-color: rgba(255, 255, 255, 1);
+  padding-bottom: 10px;
+}
+
+
+.title-div {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  color: #ffffff;
+  font-family: sans-serif;
+  line-height: 1.5;
+  padding: 2rem;
+}
+.display-1 {
+  color: #ffffff;
+}
+.title-div a.title-div {
+      text-decoration: none;
+      color: #ffffff;
+  }
+
+@supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
+  .title-div {
+    -webkit-backdrop-filter: blur(8px);  /* Safari 9+ */
+    backdrop-filter: blur(8px); /* Chrome and Opera */
+    box-shadow: 0px 10px 15px 10px rgb(0 0 0 / 15%);
+    background-color: rgb(228 228 228 / 15%); 
+  }
+}
+
+</style>
+
+
+<br><br>
+
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-12 text-center mt-5 title-div">
+      <h1 class="display-1"><b>Welcome to Mini-Amazon</b></h1>
+      <br>
+      <br>
+      <h4 class="display-6">By: Owen Jennings, Michael Murata, Charlie Veronee, Jon Esponda, and Jonathan 'JM' Stroh</h4>
+      <br>
+      <p>CS 316, Fall 2023</p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+  body {
+    background: linear-gradient(to right, #ff7e5f, #feb47b); /* Adjust the colors as needed */
+  }
+</style>
+
+<br><br>
+
+<h1>Reviews of Me</h1>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div>
+  {% for message in messages %}
+  <div class="alert alert-info mt-2" role="alert">{{ message }}</div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <p>
+      {{ form.filterType.label }}<br/>
+      {{ form.filterType(size=1) }}<br/>
+      {% for error in form.filterType.errors %}
+      <!-- <span style="color: red;">[{{ error }}]</span> -->
+      <br/>
+      {% endfor %}
+      {{ form.filterAmount.label }}<br/>
+      {{ form.filterAmount(size=32) }}<br/>
+      {% for error in form.filterAmount.errors %}
+      <span style="color: red;">[{{ error }}]</span>
+      <br/>
+      {% endfor %}
+    </p>
+    <p>
+      {{ form.submit() }}
+    </p>
+  </form>
+
+  <form method="POST" action="{{ url_for('myprofile.profilepage') }}">
+    <button type="submit" class="btn btn-sm btn-primary">Return to Profile Page</button>
+  </form>
+
+
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product Name / Seller E-Mail</th>
+      <th scope="col">Time Reviewed</th>
+      <th scope="col">Comments</th>
+      <th scope="col">Number of Stars</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if user_reviews %}
+    {% for review in user_reviews%}
+      <tr>
+        <th scope="row">{{review.id}}</th>
+        <th>{{review.time_reviewed}}</th>
+        <th>{{review.comments}}</th>
+        <td>{{review.num_stars}}</td>
+      </tr>
+    {% endfor %}
+    {% endif %}
+  </tbody>
+</table>
+
+{% endblock %}

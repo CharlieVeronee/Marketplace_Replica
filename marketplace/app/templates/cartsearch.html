@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<div class="container">
+    <br><br>
+
+
+
+
+<h1>User Cart Search</h1>
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <p>
+      {{ form.uid.label }}<br/>
+      {{ form.uid(size=32) }}<br/>
+      {% for error in form.uid.errors %}
+      <span style="color: red;">[{{ error }}]</span>
+      {% endfor %}
+    </p>
+    <p>
+      {{ form.submit() }}
+    </p>
+  </form>
+
+
+  <!-- Displaying Cart Items -->
+  <table class="table table-hover table-bordered">
+      <thead class="thead-dark">
+          <tr>
+              <th scope="col">Product Name</th>
+              <th scope="col">Price</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Total</th>
+          </tr>
+      </thead>
+      <tbody>
+          {%for item in cart%}
+          <tr>
+              <th scope="row">{{item.name}}</th>
+              <td>{{item.price}}</td>
+              <td>{{item.quantity}}</td>
+              <td>{{item.total}}</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+  body {
+      background: linear-gradient(to right, #ff7e5f, #feb47b); /* Adjust the colors as needed */
+  }
+</style>
+
+<br><br>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class="flashes">
+      {% for category, message in messages %}
+        <li class="{{ category }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+
+
+<style>
+  body {
+	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background-size: 400% 400%;
+	animation: gradient 15s ease infinite;
+  background-attachment: fixed; /* Prevent background from repeating on scroll */
+	height: 100vh;
+}
+    @keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+.styled-table {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #343a40;
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: sans-serif;
+  }
+
+  .styled-table th,
+  .styled-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #343a40;
+  }
+
+  .styled-table thead {
+    background-color: #343a40;
+    color: white;
+  }
+
+  .styled-table tbody {
+    background-color: #495057;
+    color: white;
+  }
+</style>
+
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <div class="card">
+      {% if g.user_photo %}
+            <img src="{{ g.user_photo[0] }}" alt="Profile Picture">
+        {% else %}
+            <img src="{{ url_for('static', filename='img/default.jpg') }}">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="mt-5 col-lg-6 col-md-12">
+      <div class="card text-center">
+        <h3>Profile</h3>
+        <h3 class="display-6">
+          {{user.firstname}} {{user.lastname}}
+        </h3>
+        <p>Email:<br>{{ user.email }}</p>
+        <br>
+        <p>Address:<br>{{ user.address }}</p>
+        <br>
+        <p>Seller Status:<br> {{ user.isSeller}}</p>
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="mt-5 col-lg-6 col-md-12">
+      <div class="card text-center">
+        <h2>Update Your Information:</h2>
+
+<div class="form-container">
+  <form action="{{ url_for('myprofile.edit_my_firstname') }}" method="post" style="display: inline;">
+    <input type="hidden" name="user_id" value="{{ current_user.id }}">
+    <input type="text" name="new_firstname" placeholder="First Name" required>
+    <button type="submit" class="btn btn-primary">Edit</button>
+  </form>
+</div>
+<br>
+<div class="form-container">
+  <form action="{{ url_for('myprofile.edit_my_lastname') }}" method="post" style="display: inline;">
+    <input type="hidden" name="user_id" value="{{ current_user.id }}">
+    <input type="text" name="new_lastname" placeholder="Last Name" required>
+    <button type="submit" class="btn btn-primary">Edit</button>
+  </form>
+</div>
+
+<br>
+
+<div class="form-container">
+  <form action="{{ url_for('myprofile.edit_my_address') }}" method="post" style="display: inline;">
+    <input type="hidden" name="user_id" value="{{ current_user.id }}">
+    <input type="text" name="new_address" placeholder="New Address" required>
+    <button type="submit" class="btn btn-primary">Edit</button>
+  </form>
+</div>
+
+<br>
+
+<div class="form-container">
+  <form action="{{ url_for('myprofile.edit_my_email') }}" method="post" style="display: inline;">
+    <input type="hidden" name="user_id" value="{{ current_user.id }}">
+    <input type="text" name="new_email" placeholder="New Email" required>
+    <button type="submit" class="btn btn-primary">Edit</button>
+  </form>
+</div>
+
+<br>
+
+<div class="form-container">
+  <form action="{{ url_for('myprofile.edit_my_password') }}" method="post" style="display: inline;">
+    <input type="hidden" name="user_id" value="{{ current_user.id }}">
+    <input type="text" name="new_password" placeholder="New Password" required>
+    <button type="submit" class="btn btn-primary">Edit</button>
+  </form>
+</div>
+
+<br>
+
+<div class="form-container">
+  <form action="{{ url_for('myprofile.edit_my_photo') }}" method="post" style="display: inline;">
+    <input type="hidden" name="user_id" value="{{ current_user.id }}">
+    <input type="text" name="new_photo" placeholder="New Photo URL" required>
+    <button type="submit" class="btn btn-primary">Edit</button>
+  </form>
+</div>
+
+<br>
+
+<div class="form-container">
+  <form action="{{ url_for('myprofile.edit_my_isSeller') }}" method="post" style="display: inline;">
+    <input type="hidden" name="user_id" value="{{ current_user.id }}">
+    <label>
+      <input type="checkbox" name="new_isSeller" {% if current_user.isSeller %}checked{% endif %}>
+      Update seller status
+      <button type="submit" class="btn btn-primary">Confirm</button>
+      <br>
+      <small>(submit checked to change to TRUE, submit unchecked to change to FALSE)</small>
+    </label>
+    
+  </form>
+</div>
+
+<br>
+
+  <form action="{{ url_for('reviews.my_reviews') }}" method="post" class="d-inline">
+    <input type="hidden" name="user_id" value="{{ current_user.id }}">
+    <button class="btn btn-primary btn-lg" type="submit">Edit My Reviews</button>
+  </form>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="mt-5 mb-5 col-lg-6 col-md-12">
+        <div class="card text-center">
+        {% if current_user.isSeller %}
+        <div class="row gx-4 gx-lg-5 align-items-center">
+          <h3>Reviews About Me:</h3>
+          {% if reviews %}
+          <div class="stars">
+              Average Rating:
+              <br>
+              <p class="small">
+                {% for i in range(0, (stars // 1) | int) %} 
+                <!-- Floor function -->
+                  <i class="bi bi-star-fill"></i>
+                {% endfor %}
+                {% if stars % 1 >= 0.5 %}
+                  <i class="bi bi-star-half"></i>
+                {% endif %}
+                {% for i in range(0, 5 - ((stars // 1) | int + (stars % 1 >= 0.5))) %}
+                  <i class="bi bi-star"></i>
+                {% endfor %}
+                {{'%0.2f'| format(stars|float)}}/5
+              </p>
+            </div>
+          <div class="seller-review mt-3">
+            {% for review in reviews %}
+            <div class="fs-5 stars">
+              <p class="small">
+                {% for i in range(0, (review.num_stars // 1) | int) %} 
+                <!-- Floor function -->
+                  <i class="bi bi-star-fill"></i>
+                {% endfor %}
+                {% if review.num_stars % 1 >= 0.5 %}
+                  <i class="bi bi-star-half"></i>
+                {% endif %}
+                {% for i in range(0, 5 - ((review.num_stars // 1) | int + (review.num_stars % 1 >= 0.5))) %}
+                  <i class="bi bi-star"></i>
+                {% endfor %}
+                {{review.num_stars | int}}/5
+              </p>
+            </div>
+            {{review.comments}}
+            <br>
+            <div class="text-secondary">{{humanize_time(review.time_reviewed)}}</div>
+            {% endfor %}
+          
+          {% else %}
+          <div class="text-secondary">This seller currently has no reviews!</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+{% endif %}
+
+{% endblock %}

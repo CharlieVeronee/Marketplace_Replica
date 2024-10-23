@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+  /* Credit: https://codepen.io/P1N2O/pen/pyBNzX */
+  body {
+	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background-size: 400% 400%;
+	animation: gradient 15s ease infinite;
+  background-attachment: fixed; /* Prevent background from repeating on scroll */
+	height: 100vh;
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+
+
+.product-card {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  color: #ffffff;
+  font-family: sans-serif;
+  line-height: 1.5;
+}
+.product-card img {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+.card-body {
+  padding: 1rem 2rem;
+}
+.product-card a.product-link {
+      text-decoration: none;
+      color: #ffffff;
+  }
+
+@supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
+  .product-card {
+    -webkit-backdrop-filter: blur(8px);  /* Safari 9+ */
+    backdrop-filter: blur(8px); /* Chrome and Opera */
+    box-shadow: 0px 10px 15px 10px rgb(0 0 0 / 15%);
+    background-color: rgb(228 228 228 / 15%); 
+  }
+}
+
+</style>
+
+
+<style>
+  .container-fluid {
+    margin-bottom: 15px;
+  }
+
+  .container-fluid  form {
+    display: inline;
+  }
+
+  .container-fluid  input[type="text"] {
+    padding: 8px;
+    width: 200px;
+    margin-right: 10px;
+    background-color: #343a40;
+    color: white;
+    border: 1px solid #343a40;
+    border-radius: 5px;
+  }
+
+  .container-fluid  button {
+    padding: 8px 12px;
+    background-color: #343a40;
+    color: white;
+    border: 1px solid  #343a40;
+    border-radius: 5px;
+  }
+</style>
+
+<div class="container-fluid">
+  <br />
+  <div class="row align-content-center">
+    <div class="col-lg-12">
+      <h1>My Products</h1>
+      <hr>
+      <br>
+      {% with messages = get_flashed_messages() %}
+          {% if messages %}
+          <div class="alert alert-info mt-2" role="alert">
+              {% for message in messages %}
+                {{ message }} 
+              {% endfor %}
+          </div>
+          {% endif %}
+          {% endwith %}
+    </div>
+    <div class="col-lg-4 col-md-12">
+      <form id="searchForm" action="" novalidate>
+        <label for="search">Filter by product name:</label>
+        <div class="row">
+          <div class="col">
+          <input type="text" class="form-control" name="search" id="search">
+          </div>
+          <div class="col">
+            <button class="btn btn-primary" type="submit">Search</button>
+            {% if request.args.get('search') and request.args.get('search') != "" %}
+              <button class="btn btn-secondary" type="button" id="cancelButton">Cancel</button>
+            {% endif %}
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+    </div>
+
+</div>
+</div>
+<div class="container">
+  {% if products %}
+  <br />
+  <div class="product-wrapper row">
+    
+    {% for product in products%}
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mt-5">
+      <div class="product-card">
+        {% if product.images %}
+        <img class="card-img-top" width="100%" height="auto" src="{{ url_for('static', filename = 'uploads/' + product.images[0])}}">
+        {% else %}
+        <img class="card-img-top" width="100%" height="auto" src="{{ url_for('static', filename='img/default.jpg') }}">
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title text-center">{{product.name}}</h5>
+          <p class="card-text text-center m-0">${{product.price}}</p>
+          <div class="stars text-center">
+            <p class="small">
+              {% for i in range(0, (product.stars // 1) | int) %} 
+              <!-- Floor function -->
+                <i class="bi bi-star-fill"></i>
+              {% endfor %}
+              {% if product.stars % 1 >= 0.5 %}
+                <i class="bi bi-star-half"></i>
+              {% endif %}
+              {% for i in range(0, 5 - ((product.stars // 1) | int + (product.stars % 1 >= 0.5))) %}
+                <i class="bi bi-star"></i>
+              {% endfor %}
+              {{'%0.2f'| format(product.stars|float)}}/5
+            </p>
+          </div>
+          <div class="text-center">
+            <a class="product-link text-center" href="{{ url_for('products.product_page', id = product.id) }}">See Product Listing</a> |
+            <a class="product-link text-center" href="{{ url_for('products.edit_product', id = product.id) }}">Edit</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% if products %}
+<div class="bottom-row pt-5 pb-5 mt-5 mb-5 d-flex justify-content-center">
+  {{ pagination.links }}
+</div>
+{% endif %}
+{% else %}
+<p>No products available. Create products to view and edit them here.</p>
+{% endif %}
+
+<script> 
+  document.addEventListener('DOMContentLoaded', function() {
+      // Restore search text
+      const searchFilter = localStorage.getItem('searchFilter');
+      if (searchFilter) {
+        if (searchFilter !== document.getElementById('search').value) {
+          document.getElementById('search').value = searchFilter;
+        }
+      }
+  });
+  document.getElementById('search').addEventListener('input', function() {
+    const searchFilter = this.value;
+    const cachedFilter = localStorage.getItem('searchFilter');
+    if (cachedFilter !== searchFilter) {
+      localStorage.setItem('searchFilter', searchFilter);
+    }
+  });
+  
+  document.getElementById('cancelButton').addEventListener('click', function() {
+      document.getElementById('search').value = "";
+      localStorage.setItem('searchFilter', "");
+      document.getElementById('searchForm').submit();
+  });
+
+</script>
+  
+
+{% endblock %}

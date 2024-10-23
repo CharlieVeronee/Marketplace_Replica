@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div>
+          {% for message in messages %}
+          <div class="alert alert-info mt-2" role="alert">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+<img src="{{ user.photo }}">
+
+<style>
+    body {
+      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+    background-attachment: fixed; /* Prevent background from repeating on scroll */
+      height: 100vh;
+  }
+      @keyframes gradient {
+      0% {
+          background-position: 0% 50%;
+      }
+      50% {
+          background-position: 100% 50%;
+      }
+      100% {
+          background-position: 0% 50%;
+      }
+  }
+  
+  .styled-table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 80%;
+      border: 1px solid #343a40;
+      border-radius: 10px;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+  
+    .styled-table th,
+    .styled-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #343a40;
+    }
+  
+    .styled-table thead {
+      background-color: #343a40;
+      color: white;
+      font-weight: bold;
+      font-size: 20px;
+    }
+  
+    .styled-table tbody {
+      background-color: #495057;
+      color: white;
+    }
+  
+  
+    
+  </style>
+
+
+<br><br>
+
+
+{% if user.isSeller %}
+    <h2>Seller Profile Information:</h2>
+    <table class='styled-table'>
+        <thead>
+            <tr>
+                <th>Account ID</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.firstname ~ ' ' ~ user.lastname }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.address }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="row gx-4 gx-lg-5 align-items-center">
+        <hr class="mt-5" />
+        <h3>Seller Reviews</h3>
+        <h4>Number of reviews: {{ num_reviews }}, Average rating: {{'%0.2f'| format(stars|float)}}/5</h4>
+        {% if reviews %}
+      
+        <div class="seller-review mt-3">
+          {% for review in reviews %}
+          <div class="fs-5 stars">
+            <p class="small">
+              {% for i in range(0, (review.num_stars // 1) | int) %} 
+              <!-- Floor function -->
+                <i class="bi bi-star-fill"></i>
+              {% endfor %}
+              {% if review.num_stars % 1 >= 0.5 %}
+                <i class="bi bi-star-half"></i>
+              {% endif %}
+              {% for i in range(0, 5 - ((review.num_stars // 1) | int + (review.num_stars % 1 >= 0.5))) %}
+                <i class="bi bi-star"></i>
+              {% endfor %}
+              {{review.num_stars | int}}/5
+            </p>
+          </div>
+          {{review.comments}}
+          <br>
+          <div class="text-secondary">{{humanize_time(review.time_reviewed)}}</div>
+          {% endfor %}
+        
+        {% else %}
+        <div class="text-secondary">This seller currently has no reviews!</div>
+        {% endif %}
+        </div>
+        <br>
+        <br>
+
+    {% if current_user.is_authenticated %}
+        <h5>Create a new review</h5>
+        <form method="POST" action="{{ url_for('reviews.create_seller_review') }}">
+            <input type="hidden" name="seller_id" value="{{ user.id }}">
+            <label for="num_stars">Number of Stars:</label>
+            <input class="form-control text-center me-3" type="number" name="num_stars" id="num_stars" min="1" max="5" step="1" style="width: 100px;" />
+            <br>
+            <label for="comments">Comments:</label>
+            <textarea class="form-control me-3" name="comments" id="comments" style="width: 800px; height: 100px; resize: vertical;"></textarea>
+            <br>
+            <button class="btn btn-primary flex-shrink-0" type="submit">Submit Review</button>
+        </form>
+
+    {% else %}
+        <a class="btn btn-primary" href="{{ url_for('users.login') }}">Sign in to create reviews!</a>
+    {% endif %}
+    </div>
+
+{% else %}
+    <h2>User Profile Information:</h2>
+    <table class='styled-table'>
+        <thead>
+            <tr>
+                <th>Account ID</th>
+                <th>Full Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.firstname ~ ' ' ~ user.lastname }}</td>
+            </tr>
+        </tbody>
+    </table>
+    
+{% endif %}
+
+{% endblock %}

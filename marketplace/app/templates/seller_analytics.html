@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    body {
+      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+    background-attachment: fixed; /* Prevent background from repeating on scroll */
+      height: 100vh;
+  }
+      @keyframes gradient {
+      0% {
+          background-position: 0% 50%;
+      }
+      50% {
+          background-position: 100% 50%;
+      }
+      100% {
+          background-position: 0% 50%;
+      }
+  }
+  
+  .styled-table {
+      border-collapse: collapse;
+      width: 100%;
+      border: 1px solid #343a40;
+      border-radius: 10px;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+  
+    .styled-table th,
+    .styled-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #343a40;
+    }
+  
+    .styled-table thead {
+      background-color: #343a40;
+      color: white;
+    }
+  
+    .styled-table tbody {
+      background-color: #495057;
+      color: white;
+    }
+  </style>
+
+<br><br>
+
+<h1>Analytics Hub</h1>
+
+<br>
+
+<div>
+    <h3>Total Profit: ${{ profit }}</h3> 
+</div>
+
+<br>
+
+<div>
+    <h3>Your Most Popular Products</h3>
+    <ol type="1">
+        {% for product in ten %}
+        <li><h4>{{product.name}}</h4></li>
+        {% endfor %}
+    </ol>
+</div>
+
+<div>
+    <h3>Your Top Buyers</h3>
+    <ol type="1">
+        {% for product in five %}
+        <li><h4>{{product.firstname}} {{product.lastname}}</h4></li>
+        {% endfor %}
+    </ol>
+</div>
+
+<div>
+    <h3>Your Least Popular Products</h3>
+    <ol type="1">
+        {% for product in bten %}
+        <li><h4>{{product.name}}</h4></li>
+        {% endfor %}
+    </ol>
+</div>
+
+
+
+{% endblock %}

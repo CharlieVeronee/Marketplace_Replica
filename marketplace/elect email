@@ -1,0 +1,25 @@
+ id | user_id |    time_reviewed    |              comments              | num_stars | product_id 
+----+---------+---------------------+------------------------------------+-----------+------------
+ 11 |     103 | 2023-12-07 18:15:15 | abc                                |         3 |        158
+ 12 |     103 | 2023-12-07 18:20:42 | Civil in step guess pattern        |         1 |          0
+ 13 |     103 | 2023-12-07 18:20:42 | Region over return their           |         1 |          1
+ 14 |     103 | 2023-12-07 18:20:42 | Rest sound help day                |         1 |          2
+ 15 |     103 | 2023-12-07 18:20:42 | New choose adult opportunity       |         1 |          3
+ 16 |     103 | 2023-12-07 18:20:42 | Really successful during subject   |         1 |          4
+ 18 |     103 | 2023-12-07 18:20:42 | Agency which impact parent         |         1 |          6
+ 19 |     103 | 2023-12-07 18:20:42 | Operation stay different down sit  |         1 |          7
+ 20 |     103 | 2023-12-07 18:20:42 | Want degree seek best              |         1 |          8
+ 21 |     103 | 2023-12-07 18:20:42 | Hope evening herself whatever      |         1 |          9
+ 22 |     103 | 2023-12-07 18:20:42 | Road north speech reason           |         1 |         10
+ 23 |     103 | 2023-12-07 18:20:42 | Near discuss pressure computer him |         1 |         11
+ 24 |     103 | 2023-12-07 18:20:42 | Activity born                      |         1 |         12
+ 25 |     103 | 2023-12-07 18:20:42 | Person put see                     |         1 |         13
+ 26 |     103 | 2023-12-07 18:20:42 | House market tree                  |         1 |         14
+ 27 |     103 | 2023-12-07 18:20:42 | Allow mission sea                  |         1 |         15
+ 28 |     103 | 2023-12-07 18:20:42 | Dog write act                      |         1 |         16
+ 29 |     103 | 2023-12-07 18:20:42 | In reality as dinner protect       |         1 |         17
+ 30 |     103 | 2023-12-07 18:20:42 | Each must of                       |         1 |         18
+ 31 |     103 | 2023-12-07 18:20:42 | Take amount                        |         1 |         19
+ 32 |     103 | 2023-12-07 18:34:21 | test                               |         2 |         20
+(21 rows)
+

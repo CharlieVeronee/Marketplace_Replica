@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+  body {
+	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background-size: 400% 400%;
+	animation: gradient 15s ease infinite;
+  background-attachment: fixed; /* Prevent background from repeating on scroll */
+	height: 100vh;
+}
+    @keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+
+
+.card-body {
+  padding: 1rem 2rem;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  margin: 1rem;
+  font-family: sans-serif;
+  line-height: 1.5;
+
+}
+.product-card a.product-link {
+      text-decoration: none;
+      color: #ffffff;
+  }
+
+@supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
+  .product-card {
+    -webkit-backdrop-filter: blur(8px);  /* Safari 9+ */
+    backdrop-filter: blur(8px); /* Chrome and Opera */
+    box-shadow: 0px 10px 15px 10px rgb(0 0 0 / 15%);
+    background-color: rgb(228 228 228 / 15%); 
+  }
+}
+
+</style>
+
+
+<br><br>
+
+<div class="form-group mb-3">
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <div class="alert alert-info mt-2" role="alert">
+      {% for message in messages %}
+      <div class="alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+        </button> 
+      {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+</div>
+
+<h1>Seller Hub</h1>
+
+<div class = "navbar-margin">
+  <a href="{{ url_for('products.create_product') }}" class="btn btn-info ml-lg-0 ml-xl-3 mt-lg-2 mt-xl-0 my-2 my-sm-0 float right" type="button">Add to your inventory!</a>
+  <a href="{{ url_for('invhub.analytics') }}" class="btn btn-info ml-lg-0 ml-xl-3 mt-lg-2 mt-xl-0 my-2 my-sm-0 float right" type="button">Your Seller Statistics</a>
+  <a href="{{ url_for('inventory.see_orders') }}" class="btn btn-info ml-lg-0 ml-xl-3 mt-lg-2 mt-xl-0 my-2 my-sm-0 float right" type="button">Track Your Orders</a>
+</div>
+
+<hr>
+
+{% if current_user.is_authenticated %}
+<h2>Your Inventory:</h2>
+<br>
+<div class = "row">
+    {% for product in selling_inv%}
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <!-- <img class="card-img-top" width="100%" height="auto" src="{{ url_for('static', filename='img/default.jpg') }}"> -->
+        <div class="card-body">
+          <a href="{{ url_for('products.product_page', id = product.product_id) }}"><h5 class="card-title">{{product.name}}</h5></a>
+          <p class="card-text">${{product.price}}</p>
+          <div class="row">
+            <p class="card-text" style="font-size:medium; color: gray;"><i>Quantity: {{product.quantity}}</i></p> 
+            <button class="btn btn-link" data-toggle="modal" data-target="#{{product.product_id}}-edit">Edit</button>
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#{{product.product_id}}">
+              Delete from inventory
+            </button>
+          </div>
+          <!-- Modal for edit quantity button -->
+          <div class="modal fade" id="{{product.product_id}}-edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Edit Quantity</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>Input the updated quantity in the field below.</p>
+                  <form action="{{ url_for('invhub.updateQTY') }}" method="POST">
+                    <div class="mb-3">
+                      <label for="qty-num" class="col-form-label">New Quantity:</label>
+                      <input type="text" class="form-control" id="qty-num" name="qty_num">
+                    </div>
+                    <input type="hidden" name="pid" value="{{ product.product_id }}">
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                      <button type="submit" class="btn btn-primary" id="updatebtn">Update Quantity</button>   
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Modal for delete button -->
+          <div class="modal fade" id="{{product.product_id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Delete from inventory</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  Are you sure you wish to delete this item from your inventory?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                  <form action="{{ url_for('invhub.delete') }}" method="post" style="display: inline;">
+                    <input type="hidden" name="pid" value="{{ product.product_id }}">
+                    <button type="submit" class="btn btn-danger" id="deletebtn">Delete</button>
+                  </form>     
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<div class="row mt-5 mb-5 align-items-center">
+  {{ pagination.links }}
+</div>
+{% else %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to see your inventory!</p>
+{% endif %}
+{% endblock %}

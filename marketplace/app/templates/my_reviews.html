@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+  body {
+	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background-size: 100% 100%;
+	animation: gradient 15s ease infinite;
+  background-attachment: fixed; /* Prevent background from repeating on scroll */
+	height: 100vh;
+}
+    @keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+.styled-table {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #343a40;
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: sans-serif;
+  }
+
+  .styled-table th,
+  .styled-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #343a40;
+  }
+
+  .styled-table thead {
+    background-color: #343a40;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+  }
+
+  .styled-table tbody {
+    background-color: #495057;
+    color: white;
+  }
+</style>
+
+<style>
+  .form-container {
+    margin-bottom: 15px;
+  }
+
+  .form-container form {
+    display: inline;
+  }
+
+  .form-container input[type="text"] {
+    padding: 8px;
+    width: 200px;
+    margin-right: 10px;
+    background-color: #343a40;
+    color: white;
+    border: 1px solid #343a40;
+    border-radius: 5px;
+  }
+
+  .form-container button {
+    padding: 8px 12px;
+    background-color: #343a40;
+    color: white;
+    border: 1px solid  #343a40;
+    border-radius: 5px;
+  }
+</style>
+
+<br><br>
+
+<div class="container-fluid">
+  <div class="row mt-5 justify-content-center">
+    <div class="col-lg-6 col-md-12">
+      <h1>My Reviews</h1>
+
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <div>
+    {% for message in messages %}
+    <div class="alert alert-info mt-2" role="alert">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+
+    <form action="" method="post" novalidate>
+      {{ form.hidden_tag() }}
+      <p>
+        {{ form.filterType.label }}<br/>
+
+        {{ form.filterType(size=1, class_="form-control") }}<br/>
+        {% for error in form.filterType.errors %}
+        <br/>
+        {% endfor %}
+      </p>
+      <p>
+        {{ form.submit(class_="btn btn-primary") }}
+      </p>
+    </form>
+    </div>
+  </div>
+  
+
+  <!-- <h2>My Reviews:</h2> -->
+  <!-- {% set filter_type = form.filterType.data or 'all' %}
+  {% set filtered_reviews = user_reviews if not form.is_submitted or form.filterType.data == 'all' else user_reviews_filtered %} -->
+  {% if user_reviews %}
+  <div class="row mt-5 justify-content-center">
+    <div class="col-lg-10 col-md-12">
+  <table class='styled-table'>
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Product Name / Seller E-Mail</th>
+        <th scope="col">Time Reviewed</th>
+        <th scope="col">Comments</th>
+        <th scope="col">Number of Stars</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+      {% for review in user_reviews%}
+        <tr>
+          <td>{{review.name}}</td>
+          <td>{{humanize_time(review.time_reviewed)}}</td>
+          <td>{{review.comments}}</td>
+          <td>{{review.num_stars}}</td>
+          <td colspan="2" class="d-flex justify-content-between">
+            <a href="{{ url_for('reviews.edit_review', review_type=review.review_type, review_id=review.review_id) }}">Edit</a>
+            <br>
+            <br>
+            <a href="{{ url_for('reviews.delete_review', review_type=review.review_type, review_id=review.review_id) }}">Delete</a>          
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div></div>
+  <div class="row mt-5 mb-5 align-items-center">
+      <div class="col">
+      {{ pagination.links }}
+    </div>
+  </div>
+  <form method="POST" action="{{ url_for('myprofile.profilepage') }}">
+    <button type="submit" class="btn btn-danger mb-5">Return to Profile Page</button>
+  </form>
+  {% endif %}
+</div>
+
+{% endblock %}

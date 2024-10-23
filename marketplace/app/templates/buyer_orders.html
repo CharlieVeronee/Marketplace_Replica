@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<style>
+  body {
+	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background-size: 400% 400%;
+	animation: gradient 15s ease infinite;
+  background-attachment: fixed; /* Prevent background from repeating on scroll */
+	height: 100vh;
+}
+    @keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+.styled-table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 70%;
+    border: 1px solid #343a40;
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: sans-serif;
+  }
+
+  .styled-table th,
+  .styled-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #343a40;
+  }
+
+  .styled-table thead {
+    background-color: #343a40;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+  }
+
+  .styled-table tbody {
+    background-color: #495057;
+    color: white;
+  }
+
+</style>
+{% if not users_orders %}
+  <h3>You don't have any orders yet. Go buy something...</h3>
+{% endif %}
+
+{% for i in range(users_orders|length) %}
+  {% set order = users_orders[i] %}
+  {% set total_price = total_prices[i] %}
+
+  <h1>Your Order #{{ order.id }}</h1>
+  <h2>Fulfilled Status: {{ order.fulfilled }} | Time Ordered: {{humanize_time(order.time_ordered)}} </h2>
+
+  <h3>Your delivery address: {{ order.delivery_addy|default('Not provided')|striptags }}</h3>
+
+  <table class='table table-hover table-bordered container'>
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Product Name</th>
+        <th scope="col">Seller</th>
+        <th scope="col">Price</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Total</th>
+        <th scope="col">Fulfilled?</th>
+        <th scope="col">Time Fulfilled</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for item in total_order_items %}
+            {% if order.id == item.order_id %}
+        <tr>
+          <td>{{ item.name }}</td>
+          <td>{{ item.seller }}</td>
+          <td>{{ item.price }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.total }}</td>
+          <td>{{ item.fulfilled }}</td>
+          <td>{{ humanize_time(item.time_fulfilled) }}</td>
+        </tr>
+        {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h4>Total Price: ${{ total_price|round(2) }}</h4>
+
+  
+{% endfor %}
+
+
+{% endblock %}
